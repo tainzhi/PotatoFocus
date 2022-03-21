@@ -39,7 +39,7 @@ class Main:
 
     def _show_full_screen(self):
         self._main_window.show_full_screen()
-        # self._second_window.show_full_screen()
+        self._second_window.show_full_screen()
 
     def _set_background(self):
         self._main_window.set_background(Util.screen_photo)

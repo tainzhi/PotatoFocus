@@ -6,6 +6,12 @@
 
 目前只在windows测试，还未在mac和linux下测试。
 
+
+其实已经有了很成熟的工具了。使用起来也很方便。
+- focus(for macOS only)
+- Workrave(for windows only)
+- [wnr](https://github.com/RoderickQiu/wnr)(for macos/windows, electro实现)
+
 ## Todo
 - [ ] 开机启动 [1](https://www.geeksforgeeks.org/autorun-a-python-script-on-windows-startup/) 和 [2](https://www.yisu.com/zixun/166099.html),也可参考 https://www.yisu.com/zixun/166099.html
 - [ ] trayicon显示当前状态
@@ -13,7 +19,8 @@
 - [ ] 添加设置 break和work的时间ui
 
 ## Reference
-图标网址: https://www.iconfont.cn/search/index?searchType=icon&q=%E7%95%AA%E8%8C%84
-python style https://peps.python.org/pep-0008/#function-and-variable-names
-[PyQt5实战学习](https://github.com/cxinping/PyQt5)
+- 图标网址: https://www.iconfont.cn/search/index?searchType=icon&q=%E7%95%AA%E8%8C%84
+- python style https://peps.python.org/pep-0008/#function-and-variable-names
+- [PyQt5实战学习](https://github.com/cxinping/PyQt5)
+- [](https://github.com/PyQt5/PyQt)
 
