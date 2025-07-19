@@ -17,9 +17,9 @@ DEFAULT_SCREEN_PHOTO =  BASE_DIR / "resource/ScreenPhoto/default.jpg"
 # QTimer的倒计时间隔 1s=1000ms
 timer_interval = 1000
 # 35min
-timer_work = 5 # seconds
+timer_work = 35*60 # seconds
 # 5min
-timer_break = 5 # seconds
+timer_break = 5*60 # seconds
 
 
 def get_image_main_color(image_path: str, size: Tuple[int, int] = (200, 200))-> Tuple[int, int, int]:

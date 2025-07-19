@@ -76,12 +76,13 @@ class Main:
         tray.setContextMenu(menu)
 
     def _timer_countdown_callback(self):
-        if self._left_seconds > 0:
+        # 必须要大于1s, 不能大于0s, 否则初始化会导致重复倒数两次
+        print(f"Timer countdown: {self._left_seconds // 60}:{self._left_seconds % 60}")
+        if self._left_seconds > 1:
             self._left_seconds -= 1
         else:
             self._timer.stop()
             self._show_full_screen()
-        print("left time: {:02}:{:02}".format(self._left_seconds // 60, (self._left_seconds % 60) ))
 
     def _close_callback(self):
         """
