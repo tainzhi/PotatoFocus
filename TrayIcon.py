@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
-import Util
+import util
 
 
 class TrayIcon(QSystemTrayIcon):
@@ -34,7 +34,7 @@ class TrayIcon(QSystemTrayIcon):
         #把鼠标点击图标的信号和槽连接
         self.messageClicked.connect(self.mClied)
         #把鼠标点击弹出消息的信号和槽连接
-        self.setIcon(QIcon(Util.icon))
+        self.setIcon(QIcon(str(util.icon)))
         self.icon = self.MessageIcon()
         #设置图标
 

@@ -1,27 +1,35 @@
+from ast import Tuple
+from typing import Optional, Tuple
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QPalette, QPixmap, QBrush, QKeySequence, QFont
 from PyQt5.QtWidgets import QMainWindow, QShortcut, QVBoxLayout, QLabel
 from PyQt5.QtCore import Qt
 
-import Util
+import util
 from TimerWidget import TimerWidget
 
 
 class Window(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(Window, self).__init__(*args, **kwargs)
-        self.setWindowIcon(QtGui.QIcon(Util.logo_icon))
-        self.setWindowTitle(Util.app_name)
+        self.setWindowIcon(QtGui.QIcon(str(util.logo_icon)))
+        self.setWindowTitle(util.app_name)
         # self._flags = self.windowFlags() | Qt.WindowStaysOnTopHint | Qt.Window | Qt.CustomizeWindowHint
         self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.Tool)
         # add shortcut Esc to quit full window
         self.short_cut_close = QShortcut(QKeySequence('Esc'), self)
         self.short_cut_close.activated.connect(self._quit_full_screen)
 
-    def set_background(self, url):
+    def set_background(self, file_path: str):
         palette = QPalette()
-        palette.setBrush(QPalette.Background, QBrush(QPixmap(url)))
+        # Load the image
+        pixmap = QPixmap(file_path)
+        # Scale the pixmap to fit the window size
+        scaled_pixmap = pixmap.scaled(self.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        # Set the scaled pixmap as the background
+        palette.setBrush(QPalette.Background, QBrush(scaled_pixmap))
         self.setPalette(palette)
+
 
     def _show_full_screen(self):
         pass
@@ -30,10 +38,10 @@ class Window(QMainWindow):
 class MainWindow(Window):
     def __init__(self, on_close=None):
         super(MainWindow, self).__init__()
-        self.setWindowTitle(Util.app_name)
+        self.setWindowTitle(util.app_name)
         self._flags = Qt.WindowStaysOnTopHint & Qt.FramelessWindowHint
-        self._geometry = ((self.screen().size().width() / 2) - (self.width() / 2),
-                          (self.screen().size().height() / 2) - (self.height() / 2), 800, 600)
+        self._geometry = (int(self.screen().size().width() / 2) - int(self.width() / 2),
+                          int(self.screen().size().height() / 2) - int(self.height() / 2), 800, 600)
         self.setGeometry(*self._geometry)
         """ 主屏屏保图片添加倒计时 """
         self._widget = TimerWidget(self._on_timer_finish)
@@ -44,12 +52,12 @@ class MainWindow(Window):
         """TimerWidget的计时完成后的回调"""
         self._quit_full_screen()
 
-    def show_full_screen(self):
+    def show_full_screen(self, timer_widget_color: Optional[Tuple[int, int, int]] = None):
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
         # 设置全屏大小
         self._geometry = (0, 0, self.screen().size().width(), self.screen().size().height())
         self.setGeometry(*self._geometry)
-        self._widget.reset()
+        self._widget.reset(timer_widget_color)
         self.show()
 
     def _quit_full_screen(self):

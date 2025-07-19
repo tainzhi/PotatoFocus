@@ -1,14 +1,16 @@
 import enum
 import sys
-import time
-
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction
 
-import Util
+import util
 import Window
 from TrayIcon import TrayIcon
+import time
+import random
+import threading
+from picture import Pictures
 
 
 class TimerStatus(enum.Enum):
@@ -26,28 +28,39 @@ class Main:
         # todo how to use status
         self._timer_status = TimerStatus.init
         self._timer.timeout.connect(self._timer_countdown_callback)
-        self._left_seconds = Util.timer_work
+        self._left_seconds = util.timer_work
         # self._add_tray_icon()
         # 显示 system toolbar icon
         self._tray = TrayIcon()
         self._tray.show()
+        # # start a qtthread to run pictures.Picutre.run()
+        # self._pictures_thread = threading.Thread(target=Pictures().run, daemon=True)
+        # self._pictures_thread.start()
 
     def run(self):
         while True:
-            self._timer.start(Util.timer_interval)
+            self._timer.start(util.timer_interval)
             self._app.exec_()
 
     def _show_full_screen(self):
-        self._main_window.show_full_screen()
+        time_start = time.time()
+        chosed_screen_photo_path = util.DEFAULT_SCREEN_PHOTO
+        # random chose an image from CACHE_PICTURES_DIR
+        if util.CACHE_PICTURES_DIR.exists():
+            chosed_screen_photo_path = random.choice(list(util.CACHE_PICTURES_DIR.glob("*.jpg")))
+        # get the image center postion 200x200 main color, then get the constrast color
+        main_color = util.get_image_main_color(str(chosed_screen_photo_path), (1000, 1000))
+        contrast_color = util.get_contrast_color(main_color)
+        print(f"Chosed image: {chosed_screen_photo_path}, main color: {main_color}, contrast color: {contrast_color}, costs {time.time() - time_start:.2f} seconds")
+        # 把主屏幕的计时器颜色设置为对比色
+        self._main_window.set_background(str(chosed_screen_photo_path))
+        self._second_window.set_background(str(chosed_screen_photo_path))
+        self._main_window.show_full_screen(contrast_color)
         self._second_window.show_full_screen()
-
-    def _set_background(self):
-        self._main_window.set_background(Util.screen_photo)
-        self._second_window.set_background(Util.screen_photo)
 
     def _add_tray_icon(self):
         app = self._app
-        icon = QIcon(Util.tray_icon)
+        icon = QIcon(str(util.tray_icon))
         tray = QSystemTrayIcon()
         tray.setIcon(icon)
         tray.setVisible(True)
@@ -67,7 +80,6 @@ class Main:
             self._left_seconds -= 1
         else:
             self._timer.stop()
-            self._set_background()
             self._show_full_screen()
         print("left time: {:02}:{:02}".format(self._left_seconds // 60, (self._left_seconds % 60) ))
 
@@ -78,7 +90,7 @@ class Main:
         """
         self._main_window.close()
         self._second_window.close()
-        self._left_seconds = Util.timer_work
+        self._left_seconds = util.timer_work
         self._timer.start()
 
 
