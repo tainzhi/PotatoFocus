@@ -12,8 +12,8 @@ from TimerWidget import TimerWidget
 class Window(QMainWindow):
     def __init__(self, *args, **kwargs):
         super(Window, self).__init__(*args, **kwargs)
-        self.setWindowIcon(QtGui.QIcon(str(util.logo_icon)))
-        self.setWindowTitle(util.app_name)
+        self.setWindowIcon(QtGui.QIcon(str(util.LOGO_ICON)))
+        self.setWindowTitle(util.APP_NAME)
         # self._flags = self.windowFlags() | Qt.WindowStaysOnTopHint | Qt.Window | Qt.CustomizeWindowHint
         self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.Tool)
         # add shortcut Esc to quit full window
@@ -38,7 +38,7 @@ class Window(QMainWindow):
 class MainWindow(Window):
     def __init__(self, on_close=None):
         super(MainWindow, self).__init__()
-        self.setWindowTitle(util.app_name)
+        self.setWindowTitle(util.APP_NAME)
         self._flags = Qt.WindowStaysOnTopHint & Qt.FramelessWindowHint
         self._geometry = (int(self.screen().size().width() / 2) - int(self.width() / 2),
                           int(self.screen().size().height() / 2) - int(self.height() / 2), 800, 600)

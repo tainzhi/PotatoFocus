@@ -28,7 +28,7 @@ class Main:
         # todo how to use status
         self._timer_status = TimerStatus.init
         self._timer.timeout.connect(self._timer_countdown_callback)
-        self._left_seconds = util.timer_work
+        self._left_seconds = util.TIMER_WORK
         # self._add_tray_icon()
         # 显示 system toolbar icon
         self._tray = TrayIcon()
@@ -39,7 +39,7 @@ class Main:
 
     def run(self):
         while True:
-            self._timer.start(util.timer_interval)
+            self._timer.start(util.TIMER_INTERVAL)
             self._app.exec_()
 
     def _show_full_screen(self):
@@ -60,7 +60,7 @@ class Main:
 
     def _add_tray_icon(self):
         app = self._app
-        icon = QIcon(str(util.tray_icon))
+        icon = QIcon(str(util.TRAY_ICON))
         tray = QSystemTrayIcon()
         tray.setIcon(icon)
         tray.setVisible(True)
@@ -77,7 +77,7 @@ class Main:
 
     def _timer_countdown_callback(self):
         # 必须要大于1s, 不能大于0s, 否则初始化会导致重复倒数两次
-        print(f"Timer countdown: {self._left_seconds // 60}:{self._left_seconds % 60}")
+        print(f"Timer countdown: {self._left_seconds // 60:02d}:{self._left_seconds % 60:02d}")
         if self._left_seconds > 1:
             self._left_seconds -= 1
         else:
@@ -91,7 +91,7 @@ class Main:
         """
         self._main_window.close()
         self._second_window.close()
-        self._left_seconds = util.timer_work
+        self._left_seconds = util.TIMER_WORK
         self._timer.start()
 
 

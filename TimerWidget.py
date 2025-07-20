@@ -18,10 +18,10 @@ class TimerWidget(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(self.label)
         self.setLayout(layout)
-        self._left_seconds = util.timer_break
+        self._left_seconds = util.TIMER_BREAK
         self.timer = QTimer()
         self.timer.timeout.connect(self._countdown_and_show)
-        self.timer.start(util.timer_interval)
+        self.timer.start(util.TIMER_INTERVAL)
         self._show_time()
 
     def _countdown_and_show(self):
@@ -29,12 +29,13 @@ class TimerWidget(QWidget):
             self._left_seconds -= 1
             self._show_time()
         else:
-            self._on_finish()
             self.timer.stop()
+            if util.CONTINUOUS_WORK_AFTER_BREAK:
+                self._on_finish()
 
     def reset(self, color: Optional[Tuple[int, int, int]] = None):
-        self._left_seconds = util.timer_break
-        self.timer.start(util.timer_interval)
+        self._left_seconds = util.TIMER_BREAK
+        self.timer.start(util.TIMER_INTERVAL)
         if color:
             self._color = color
         self._show_time()

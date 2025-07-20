@@ -8,19 +8,20 @@ CONFIG_DIR = BASE_DIR / "config"
 CACHE_DIR = BASE_DIR / ".cache"
 CACHE_PICTURES_DIR = CACHE_DIR / "pictures"
 PIXABAY_CONFIG = CONFIG_DIR / "pixabay.json"
-app_name = "PotatoFocus"
-icon = BASE_DIR / "resource/potota.svg"
-logo_icon = icon
-tray_icon = icon
+APP_NAME = "PotatoFocus"
+ICON = BASE_DIR / "resource/potota.svg"
+LOGO_ICON = ICON
+TRAY_ICON = ICON
 DEFAULT_SCREEN_PHOTO =  BASE_DIR / "resource/ScreenPhoto/default.jpg"
 
 # QTimer的倒计时间隔 1s=1000ms
-timer_interval = 1000
+TIMER_INTERVAL = 1000
 # 35min
-timer_work = 35*60 # seconds
+TIMER_WORK = 35*60 # seconds
 # 5min
-timer_break = 5*60 # seconds
-
+TIMER_BREAK = 5*60 # seconds
+# 是否在休息后继续工作
+CONTINUOUS_WORK_AFTER_BREAK = False
 
 def get_image_main_color(image_path: str, size: Tuple[int, int] = (200, 200))-> Tuple[int, int, int]:
     from PIL import Image
