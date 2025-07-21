@@ -1,8 +1,8 @@
 from ast import Tuple
 from typing import Optional, Tuple
 from PyQt5 import QtGui, QtCore
-from PyQt5.QtGui import QPalette, QPixmap, QBrush, QKeySequence, QFont
-from PyQt5.QtWidgets import QMainWindow, QShortcut, QVBoxLayout, QLabel
+from PyQt5.QtGui import QPalette, QPixmap, QBrush, QKeySequence
+from PyQt5.QtWidgets import QMainWindow, QShortcut
 from PyQt5.QtCore import Qt
 
 import util
@@ -25,7 +25,7 @@ class Window(QMainWindow):
         # Load the image
         pixmap = QPixmap(file_path)
         # Scale the pixmap to fit the window size
-        scaled_pixmap = pixmap.scaled(self.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
+        scaled_pixmap = pixmap.scaled(self.screen().size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
         # Set the scaled pixmap as the background
         palette.setBrush(QPalette.Background, QBrush(scaled_pixmap))
         self.setPalette(palette)
@@ -40,8 +40,7 @@ class MainWindow(Window):
         super(MainWindow, self).__init__()
         self.setWindowTitle(util.APP_NAME)
         self._flags = Qt.WindowStaysOnTopHint & Qt.FramelessWindowHint
-        self._geometry = (int(self.screen().size().width() / 2) - int(self.width() / 2),
-                          int(self.screen().size().height() / 2) - int(self.height() / 2), 800, 600)
+        self._geometry = (0, 0, self.screen().size().width(), self.screen().size().height())
         self.setGeometry(*self._geometry)
         """ 主屏屏保图片添加倒计时 """
         self._widget = TimerWidget(self._on_timer_finish)

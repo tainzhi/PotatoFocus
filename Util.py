@@ -75,4 +75,3 @@ def get_contrast_color(color: Tuple[int, int, int]) -> Tuple[int, int, int]:
 
     # 转换为 0 - 255 范围的整数
     return (int(new_r * 255), int(new_g * 255), int(new_b * 255))
-
