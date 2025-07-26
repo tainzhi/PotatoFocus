@@ -15,6 +15,15 @@
 - Workrave(for windows only)
 - [wnr](https://github.com/RoderickQiu/wnr)(for macos/windows, electro实现)
 
+## usage
+```bash
+# windows
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
+```
+
 ## Todo
 - [ ] 开机启动 [1](https://www.geeksforgeeks.org/autorun-a-python-script-on-windows-startup/) 和 [2](https://www.yisu.com/zixun/166099.html),也可参考 https://www.yisu.com/zixun/166099.html
 - [ ] trayicon显示当前状态

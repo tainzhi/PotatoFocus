@@ -6,8 +6,9 @@ import colorsys
 BASE_DIR = Path(__file__).resolve().parent
 CONFIG_DIR = BASE_DIR / "config"
 CACHE_DIR = BASE_DIR / ".cache"
-CACHE_PICTURES_DIR = CACHE_DIR / "pictures"
+CACHE_IMAGES_DIR = CACHE_DIR / "images"
 PIXABAY_CONFIG = CONFIG_DIR / "pixabay.json"
+PIXABAY_DOWNLOAED_IMAGE_LIMIT_PER_TIME = 20
 APP_NAME = "PotatoFocus"
 ICON = BASE_DIR / "resource/potota.svg"
 LOGO_ICON = ICON

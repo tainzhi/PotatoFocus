@@ -3,14 +3,13 @@ import sys
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QSystemTrayIcon, QMenu, QAction
-
 import util
 import Window
 from TrayIcon import TrayIcon
 import time
 import random
 import threading
-from picture import Pictures
+from image import Image
 
 
 class TimerStatus(enum.Enum):
@@ -33,9 +32,9 @@ class Main:
         # 显示 system toolbar icon
         self._tray = TrayIcon()
         self._tray.show()
-        # # start a qtthread to run pictures.Picutre.run()
-        # self._pictures_thread = threading.Thread(target=Pictures().run, daemon=True)
-        # self._pictures_thread.start()
+        self._image = Image()
+        self._image_thread = threading.Thread(target=self._image.download_image, daemon=True)
+        self._image_thread.start()
 
     def run(self):
         while True:
@@ -45,9 +44,20 @@ class Main:
     def _show_full_screen(self):
         time_start = time.time()
         chosed_screen_photo_path = util.DEFAULT_SCREEN_PHOTO
-        # random chose an image from CACHE_PICTURES_DIR
-        if util.CACHE_PICTURES_DIR.exists():
-            chosed_screen_photo_path = random.choice(list(util.CACHE_PICTURES_DIR.glob("*.jpg")))
+        # random chose an image from CACHE_IMAGES_DIR
+        if util.CACHE_IMAGES_DIR.exists():
+            if self._image.image_usage.values():
+                # 从 self._image.image_usage()中使用次数较少的图片, 随机选取一个, 并且更新 image_usage, 然后报错
+                min_usage = min(self._image.image_usage.values())
+                least_used_images = [image for image, count in self._image.image_usage.items() if count == min_usage]
+                # 随机选择一张使用次数最少的图片
+                chosed_image = random.choice(least_used_images)
+                # 更新该图片的使用次数
+                self._image.image_usage[chosed_image] = self._image.image_usage[chosed_image] + 1
+                self._image.save_image_usage()
+                chosed_screen_photo_path = util.CACHE_IMAGES_DIR / chosed_image
+            else:
+                chosed_screen_photo_path = util.DEFAULT_SCREEN_PHOTO
         # get the image center postion 200x200 main color, then get the constrast color
         main_color = util.get_image_main_color(str(chosed_screen_photo_path), (1000, 1000))
         contrast_color = util.get_contrast_color(main_color)

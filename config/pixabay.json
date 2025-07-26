@@ -6,7 +6,7 @@
     "image_type": "photo",
     "orientation": "horizontal",
     "min_width": 2700,
-    "order": "popular", // "popular", "latest"
+    "order": "latest", // "popular", "latest"
     "page": 1,
-    "per_page": 30,
+    "per_page": 100,
 }
