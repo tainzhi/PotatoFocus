@@ -6,20 +6,20 @@ import time
 class Image:
     
     def __init__(self):
-        self.image_usage_path = CACHE_DIR / "image_usage.json"
-        self.image_usage = {}
-        self.load_image_usage()
+        self.usage_path = CACHE_DIR / "image_usage.json"
+        self.usage = {}
+        self.load_usage()
     
-    def load_image_usage(self):
-        if self.image_usage_path.exists():
-            with open(self.image_usage_path, 'r') as f:
-                self.image_usage = json5.load(f)
+    def load_usage(self):
+        if self.usage_path.exists():
+            with open(self.usage_path, 'r') as f:
+                self.usage = json5.load(f)
 
-    def save_image_usage(self):
-        with open(self.image_usage_path, 'w') as f:
-            json5.dump(self.image_usage, f)
+    def save_usage(self):
+        with open(self.usage_path, 'w') as f:
+            json5.dump(self.usage, f)
     
-    def download_image(self):
+    def download(self):
         with open(str(PIXABAY_CONFIG), 'r') as f:
             config = json5.load(f)
             self._uri = config.get("base_url", "https://pixabay.com/api/") + "?key=" + config.get("api_key", "")
@@ -60,10 +60,17 @@ class Image:
                     except Exception as e:
                         print(f"Failed to download image {image_name}: {e}")
                 # 新下载的图片, 初始化使用次数为0
-                if image_name not in self.image_usage:
-                    self.image_usage[image_name] = 0
-        self.save_image_usage()
+                if image_name not in self.usage:
+                    self.usage[image_name] = 0
+        self.save_usage()
 
 if __name__ == "__main__":
     image = Image()
-    image.download_image()
+    # image.download_image()
+    # 列举 CACHE_IMAGES_DIR 下的所有图片
+    for image_path in CACHE_IMAGES_DIR.iterdir():
+        image_name = str(image_path).split("\\")[-1]
+        if image_name not in image.usage:
+            image.usage[image_name] = 0
+    print(image.usage)
+    image.save_usage()

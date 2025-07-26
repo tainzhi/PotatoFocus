@@ -33,7 +33,7 @@ class Main:
         self._tray = TrayIcon()
         self._tray.show()
         self._image = Image()
-        self._image_thread = threading.Thread(target=self._image.download_image, daemon=True)
+        self._image_thread = threading.Thread(target=self._image.download, daemon=True)
         self._image_thread.start()
 
     def run(self):
@@ -46,15 +46,15 @@ class Main:
         chosed_screen_photo_path = util.DEFAULT_SCREEN_PHOTO
         # random chose an image from CACHE_IMAGES_DIR
         if util.CACHE_IMAGES_DIR.exists():
-            if self._image.image_usage.values():
+            if self._image.usage.values():
                 # 从 self._image.image_usage()中使用次数较少的图片, 随机选取一个, 并且更新 image_usage, 然后报错
-                min_usage = min(self._image.image_usage.values())
-                least_used_images = [image for image, count in self._image.image_usage.items() if count == min_usage]
+                min_usage = min(self._image.usage.values())
+                least_used_images = [image for image, count in self._image.usage.items() if count == min_usage]
                 # 随机选择一张使用次数最少的图片
                 chosed_image = random.choice(least_used_images)
                 # 更新该图片的使用次数
-                self._image.image_usage[chosed_image] = self._image.image_usage[chosed_image] + 1
-                self._image.save_image_usage()
+                self._image.usage[chosed_image] = self._image.usage[chosed_image] + 1
+                self._image.save_usage()
                 chosed_screen_photo_path = util.CACHE_IMAGES_DIR / chosed_image
             else:
                 chosed_screen_photo_path = util.DEFAULT_SCREEN_PHOTO
