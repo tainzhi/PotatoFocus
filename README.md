@@ -1,5 +1,5 @@
 ## Info
-这是一个 PyQt5 实现的**跨平台番茄钟久坐神器**
+这是一个 PySide6 实现的**跨平台番茄钟久坐神器**
 
 实现的功能：
 1. 默认25min的番茄工作时间，然后弹出全屏屏保（如果是多屏幕，都会全屏屏保覆盖，但是只在主屏幕显示倒计时）并5min倒计时。
@@ -21,7 +21,7 @@
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-python main.py
+python ui.py
 ```
 
 ## Todo

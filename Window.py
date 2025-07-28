@@ -1,4 +1,3 @@
-from ast import Tuple
 from typing import Optional, Tuple
 from PyQt5 import QtGui, QtCore
 from PyQt5.QtGui import QPalette, QPixmap, QBrush, QKeySequence

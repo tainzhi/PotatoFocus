@@ -1,7 +1,8 @@
 import requests
 import json5
-from util import CACHE_IMAGES_DIR, PIXABAY_CONFIG, CACHE_DIR, PIXABAY_DOWNLOAED_IMAGE_LIMIT_PER_TIME
+from util import CACHE_IMAGES_DIR, PIXABAY_CONFIG, CACHE_DIR, PIXABAY_DOWNLOAED_IMAGE_LIMIT_PER_TIME, IMAGE_MOST_USED_TIMES
 import time
+from typing import Dict
 
 class Image:
     
@@ -20,6 +21,15 @@ class Image:
             json5.dump(self.usage, f)
     
     def download(self):
+        
+        if self.usage.values():
+            min_usage = min(self.usage.values())
+            least_used_images: Dict[str, int] = [image for image, count in self.usage.items() if count == min_usage]
+            if min_usage < IMAGE_MOST_USED_TIMES :
+                print(f"{len(least_used_images)} are least used with {min_usage} times")
+                print(f"no need to download new images, as not all images are used more than {IMAGE_MOST_USED_TIMES} times")
+                return
+        
         with open(str(PIXABAY_CONFIG), 'r') as f:
             config = json5.load(f)
             self._uri = config.get("base_url", "https://pixabay.com/api/") + "?key=" + config.get("api_key", "")
@@ -38,7 +48,6 @@ class Image:
         if not CACHE_IMAGES_DIR.exists():
             CACHE_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
-        print("image count:", len(data_json["hits"]))
         download_count = PIXABAY_DOWNLOAED_IMAGE_LIMIT_PER_TIME
         for item in data_json["hits"]:
             if download_count <= 0:
