@@ -25,6 +25,15 @@ Window {
                 timerText.color = value;
             });
         }
+        
+        function onWindowShowSignal(show) {
+            if (show) {
+                mainWindow.visible = true
+                mainWindow.showFullScreen()
+            } else {
+                mainWindow.visible = false
+            }
+        }
     }
     
     // opacity: windowOpacity

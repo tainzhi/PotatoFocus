@@ -17,6 +17,18 @@ Window {
         fillMode: Image.PreserveAspectCrop
         anchors.fill: parent
     }
+    
+    Connections {
+        target: bridge
+        function onWindowShowSignal(show) {
+            if (show) {
+                secondWindow.visible = true
+                secondWindow.showFullScreen()
+            } else {
+                secondWindow.visible = false
+            }
+        }
+    }
 
     Component.onCompleted: {
         // secondWindow.showFullScreen()
