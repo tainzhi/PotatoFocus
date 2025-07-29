@@ -9,30 +9,32 @@ Window {
     color: "transparent"
     // 设置窗口标志, 去掉标题栏
     flags: Qt.FramelessWindowHint
-    property real windowOpacity: 0
+    // property real windowOpacity: 0
 
-    property int breakTimeInSecond: 5 * 60 // seconds
-    property string breakTimerColor: "white"
+    property int breakTimerIntialValueInSecond: 5 * 60 // seconds
+    property string breakTimerColor: "#ffffff"
 
     Connections {
         target: bridge
-        function onBreakTimeSignal(value) {
-            breakTimeInSecond = value;
+        function onBreakTimerIntialValueInSecondSignal(value) {
+            breakTimerIntialValueInSecond = value;
         }
         
         function onBreakTimerColorSignal(value) {
-            timerText.color = value;
+            Qt.callLater(function() {
+                timerText.color = value;
+            });
         }
     }
     
-    opacity: windowOpacity
-    Behavior on windowOpacity {
-        PropertyAnimation {
-            target: mainWindow
-            property: "windowOpacity"
-            duration: 300
-        }
-    }
+    // opacity: windowOpacity
+    // Behavior on windowOpacity {
+    //     PropertyAnimation {
+    //         target: mainWindow
+    //         property: "windowOpacity"
+    //         duration: 300
+    //     }
+    // }
 
     Image {
         id: backgroundImage
@@ -58,7 +60,7 @@ Window {
         running: false // 初始不运行
         repeat: true
         // 剩余时间属性，初始值为 5 分钟
-        property int remainingTime: breakTimeInSecond * 1000
+        property int remainingTime: breakTimerIntialValueInSecond * 1000
         onTriggered: {
             remainingTime -= interval;
             if (remainingTime <= 0) {
@@ -76,11 +78,11 @@ Window {
 
     onVisibleChanged: {
         if (visible) {
-            windowOpacity = 1;
-            breakTimer.remainingTime = breakTimeInSecond * 1000;
+            // windowOpacity = 1;
+            breakTimer.remainingTime = breakTimerIntialValueInSecond * 1000;
             breakTimer.start();
         } else {
-            windowOpacity = 0;
+            // windowOpacity = 0;
             breakTimer.stop();
         }
     }

@@ -1,13 +1,12 @@
 import sys
 from PySide6.QtGui import QIcon, QAction
 from PySide6.QtQml import QQmlApplicationEngine, QmlElement
-from PySide6.QtCore import Signal, QObject, QUrl, QEvent, Qt, qVersion, Slot, QTimer
+from PySide6.QtCore import Signal, QObject, QUrl, QEvent, Qt, qVersion, Slot, QTimer, Property
 from PySide6.QtWidgets import QApplication, QSystemTrayIcon, QMenu
 from pathlib import Path
 import util
 from image import Image
 from threading import Thread
-import time
 import random
 
 QML_IMPORT_NAME = "MainModule"
@@ -17,12 +16,12 @@ QML_IMPORT_MAJOR_VERSION = 1
 @QmlElement
 class Bridge(QObject):
     
-    breakTimeSignal = Signal(int)
+    breakTimerIntialValueInSecondSignal = Signal(int)
     breakTimerColorSignal = Signal(str)
 
-    def __init__(self, app):
-        self._app = app
+    def __init__(self, app: "MainApp"):
         super().__init__()
+        self._app: MainApp = app
         
     @Slot()
     def onBreakTimeout(self):
@@ -31,7 +30,7 @@ class Bridge(QObject):
             self._app.reset_work_timer()
     
     def set_break_timer_color(self, color: str):
-        self.breakTimeSignal.emit(util.TIMER_BREAK)
+        self.breakTimerIntialValueInSecondSignal.emit(util.TIMER_BREAK)
         self.breakTimerColorSignal.emit(color)
 
         
@@ -39,7 +38,7 @@ class Bridge(QObject):
 class MainApp(QApplication):
     onClose = Signal()
 
-    def __init__(self, sys_argv):
+    def __init__(self, sys_argv: list[str]):
         super().__init__(sys_argv)
         self.setWindowIcon(QIcon(str(util.LOGO_ICON)))
         self.setApplicationName(util.APP_NAME)
@@ -48,8 +47,9 @@ class MainApp(QApplication):
         
         self.work_timer = QTimer(self)
         self.reset_work_timer()
+        self.is_work_timer_set = False
         
-        self._image = Image()
+        self._image: Image = Image()
         self._image_thread = Thread(target=self._image.download, daemon=True)
         self._image_thread.start()
 
@@ -113,9 +113,9 @@ class MainApp(QApplication):
         self.tray_icon.activated.connect(self.on_tray_icon_activated)
         self.tray_icon.show()
     
-    def set_bridge(self, bridge):
+    def set_bridge(self, bridge: Bridge):
         self.main_context.setContextProperty("bridge", bridge)
-        self._bridge = bridge
+        self._bridge: Bridge = bridge
 
     def set_background(self, file_path: str):
         # 为主屏幕设置背景
@@ -137,13 +137,16 @@ class MainApp(QApplication):
     
     def reset_work_timer(self):
         # 断开之前的连接，避免重复连接
-        try:
-            self.work_timer.timeout.disconnect(self.update_countdown)
-        except TypeError:
-            pass
+        if self.is_work_timer_set:
+            try:
+                self.work_timer.timeout.disconnect(self.update_countdown)
+            except TypeError:
+                pass
+            self.is_work_timer_set = False
         self.remaining_time = util.TIMER_WORK * 1000  # 30 minutes in milliseconds
         self.work_timer.timeout.connect(self.update_countdown)
         self.work_timer.start(1000)  # Update every second
+        self.is_work_timer_set = True
 
     # catch esc key press event
     def eventFilter(self, obj, event):
@@ -192,8 +195,9 @@ class MainApp(QApplication):
         # get the image center postion 200x200 main color, then get the constrast color
         main_color = util.get_image_main_color(str(chosed_screen_photo_path), (1000, 1000))
         contrast_color = util.get_contrast_color(main_color)
-        # print(f"Chosed image: {chosed_screen_photo_path}, main color: {main_color}, contrast color: {contrast_color}, costs {time.time() - time_start:.2f} seconds")
-        self._bridge.set_break_timer_color(f"rgb({contrast_color[0]}, {contrast_color[1]}, {contrast_color[2]})")   
+        print(f"Chosed image: {chosed_screen_photo_path}, main color: {main_color}, contrast color: {contrast_color}, costs {time.time() - time_start:.2f} seconds")
+        # rgb to hex color
+        self._bridge.set_break_timer_color("#{:02x}{:02x}{:02x}".format(contrast_color[0], contrast_color[1], contrast_color[2]))   
         self.set_background(str(chosed_screen_photo_path))
         # 把主屏幕的计时器颜色设置为对比色
         main_root_objects = self.main_engine.rootObjects()

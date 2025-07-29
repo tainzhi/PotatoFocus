@@ -2,36 +2,36 @@ import requests
 import json5
 from util import CACHE_IMAGES_DIR, PIXABAY_CONFIG, CACHE_DIR, PIXABAY_DOWNLOAED_IMAGE_LIMIT_PER_TIME, IMAGE_MOST_USED_TIMES
 import time
-from typing import Dict
+from typing import Dict, Any
 
 class Image:
     
     def __init__(self):
         self.usage_path = CACHE_DIR / "image_usage.json"
-        self.usage = {}
+        self.usage: Dict[str, int] = {}
         self.load_usage()
     
     def load_usage(self):
         if self.usage_path.exists():
             with open(self.usage_path, 'r') as f:
-                self.usage = json5.load(f)
+                self.usage = json5.load(f) #type: ignore
 
     def save_usage(self):
         with open(self.usage_path, 'w') as f:
-            json5.dump(self.usage, f)
+            json5.dump(self.usage, f) #type: ignore
     
     def download(self):
         
         if self.usage.values():
             min_usage = min(self.usage.values())
-            least_used_images: Dict[str, int] = [image for image, count in self.usage.items() if count == min_usage]
+            least_used_images: list[str] = [image for image, count in self.usage.items() if count == min_usage]
             if min_usage < IMAGE_MOST_USED_TIMES :
-                print(f"{len(least_used_images)} are least used with {min_usage} times")
+                print(f"{len(least_used_images)} images are least used with {min_usage} times")
                 print(f"no need to download new images, as not all images are used more than {IMAGE_MOST_USED_TIMES} times")
                 return
         
         with open(str(PIXABAY_CONFIG), 'r') as f:
-            config = json5.load(f)
+            config: Dict[str, Any] = json5.load(f) # type: ignore
             self._uri = config.get("base_url", "https://pixabay.com/api/") + "?key=" + config.get("api_key", "")
             self._uri = self._uri + "&category=" + ",".join(config.get("category", [])) + "&image_type=" + config.get("image_type", "photo") + "&order=" + config.get("order", "popular") + "min_width=" + str(config.get("min_width", 800)) + "&min_height=" + str(config.get("min_height", 1920))  + "&orientation=" + config.get("orientation", "horizontal") + "&per_page=" + str(config.get("per_page", 100)) + "&page=" + str(config.get("page", 1))
             print(self._uri)
@@ -41,7 +41,7 @@ class Image:
         else:
             try:
                 # response.text to json
-                data_json = response.json()
+                data_json: Dict[str, Any] = response.json()
             except ValueError as e:
                 print(f"Failed to parse JSON data: {e}")
         
