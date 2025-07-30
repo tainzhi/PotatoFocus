@@ -20,7 +20,7 @@ Window {
     
     Connections {
         target: bridge
-        function onWindowShowSignal(show) {
+        function onFullScreenDesktopOverlayShowSignal(show) {
             if (show) {
                 secondWindow.visible = true
             } else {
@@ -30,7 +30,6 @@ Window {
     }
 
     Component.onCompleted: {
-        // secondWindow.showFullScreen()
     }
 
     onVisibleChanged: {

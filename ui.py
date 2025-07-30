@@ -19,7 +19,8 @@ class Bridge(QObject):
     
     breakTimerIntialValueInSecondSignal = Signal(int)
     breakTimerColorSignal = Signal(str)
-    windowShowSignal = Signal(bool)
+    fullScreenDesktopOverlayShowSignal = Signal(bool)
+    settingsWindowShowSignal = Signal(bool)
 
     def __init__(self, app: "MainApp"):
         super().__init__()
@@ -28,19 +29,25 @@ class Bridge(QObject):
     @Slot()
     def onBreakTimeout(self):
         if util.CONTINUOUS_WORK_AFTER_BREAK:
-            self._app.hide_windows()
+            self._app.hide_full_screen_desktop_overlay()
             self._app.reset_work_timer()
+    @Slot()
+    def onSettingsWindowClosed(self):
+        print("onSettingsWindowClosed")
+
     
     def set_break_timer_color(self, color: str):
         self.breakTimerIntialValueInSecondSignal.emit(util.TIMER_BREAK)
         self.breakTimerColorSignal.emit(color)
     
-    def show_windows(self):
-        self.windowShowSignal.emit(True)
+    def show_full_screen_desktop_overlay(self):
+        self.fullScreenDesktopOverlayShowSignal.emit(True)
     
-    def hide_windows(self):
-        self.windowShowSignal.emit(False)
-
+    def hide_full_screen_desktop_overlay(self):
+        self.fullScreenDesktopOverlayShowSignal.emit(False)
+    
+    def show_settings_window(self):
+        self.settingsWindowShowSignal.emit(True)
         
 
 class MainApp(QApplication):
@@ -100,6 +107,18 @@ class MainApp(QApplication):
             second_window = self.second_engine.rootObjects()[0]
             second_window.setScreen(self.second_screen)
             second_window.setGeometry(self.second_screen.geometry())
+            
+        
+        # 为设置窗口创建引擎
+        self.set_engine = QQmlApplicationEngine()
+        self.set_context = self.set_engine.rootContext()
+        self.set_context.setContextProperty("bridge", self._bridge)
+
+        set_qml_file = Path(__file__).parent / "Resource" / "qml" / "SettingsWindow.qml"
+        self.set_engine.load(QUrl.fromLocalFile(set_qml_file))
+
+        if not self.set_engine.rootObjects():
+            sys.exit(-1)
         
         self.installEventFilter(self)
         
@@ -110,10 +129,15 @@ class MainApp(QApplication):
 
         # Create a context menu for the tray icon
         self.tray_menu = QMenu()
+        
+        # Add an action to show the application
+        settings_action = QAction("Settings", self)
+        settings_action.triggered.connect(self.show_settings_window)
+        self.tray_menu.addAction(settings_action)
 
         # Add an action to show the application
         show_action = QAction("Show", self)
-        show_action.triggered.connect(self.show_windows)
+        show_action.triggered.connect(self.show_full_screen_desktop_overlay)
         self.tray_menu.addAction(show_action)
 
         # Add an action to quit the application
@@ -160,7 +184,7 @@ class MainApp(QApplication):
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress:
             if event.key() == Qt.Key_Escape:
-                self.hide_windows()
+                self.hide_full_screen_desktop_overlay()
                 self.reset_work_timer()
                 return True
             elif event.key() == Qt.Key_Return or event.key() == Qt.Key_Enter:
@@ -168,10 +192,14 @@ class MainApp(QApplication):
                 return True
         return super().eventFilter(obj, event)
 
-    def hide_windows(self):
-        self._bridge.hide_windows()
+    def hide_full_screen_desktop_overlay(self):
+        self._bridge.hide_full_screen_desktop_overlay()
+    
+    def show_settings_window(self) -> None:
+        self._bridge.show_settings_window()
 
-    def show_windows(self):
+    def show_full_screen_desktop_overlay(self):
+        self.work_timer.stop()
         # Show the main screen window
         time_start = time.time()
         chosed_screen_photo_path = util.DEFAULT_SCREEN_PHOTO
@@ -196,14 +224,14 @@ class MainApp(QApplication):
         # 把主屏幕的计时器颜色设置为对比色
         # rgb to hex color
         self._bridge.set_break_timer_color("#{:02x}{:02x}{:02x}".format(contrast_color[0], contrast_color[1], contrast_color[2]))   
+        self._bridge.show_full_screen_desktop_overlay()
         self.set_background(str(chosed_screen_photo_path))
-        self._bridge.show_windows()
                 
     def update_countdown(self):
         self.remaining_time -= 1000
         if self.remaining_time <= 0:
             self.work_timer.stop()
-            self.show_windows()
+            self.show_full_screen_desktop_overlay()
             print("Countdown finished, showing windows.")
         else:
             minutes = self.remaining_time // (60 * 1000)
@@ -212,7 +240,7 @@ class MainApp(QApplication):
 
     def on_tray_icon_activated(self, reason):
         if reason == QSystemTrayIcon.DoubleClick:
-            self.show_windows()
+            self.show_full_screen_desktop_overlay()
 
 if __name__ == '__main__':
     app = MainApp(sys.argv)

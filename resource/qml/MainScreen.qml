@@ -26,7 +26,7 @@ Window {
             });
         }
         
-        function onWindowShowSignal(show) {
+        function onFullScreenDesktopOverlayShowSignal(show) {
             if (show) {
                 mainWindow.visible = true
             } else {
@@ -80,8 +80,6 @@ Window {
     }
 
     Component.onCompleted: {
-        // mainWindow.showFullScreen();
-        // breakTimer.start();
     }
 
     onVisibleChanged: {

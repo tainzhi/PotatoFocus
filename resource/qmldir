@@ -1,4 +1,5 @@
 MainScreen 1.0 MainScreen.qml
 SecondScreen 1.0 SecondScreen.qml
+SettingsWindow 1.0 SettingsWindow.qml
 About 1.0 qml/About.qml
 singleton Colors 1.0 qml/Colors.qml
