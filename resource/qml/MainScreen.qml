@@ -29,7 +29,6 @@ Window {
         function onWindowShowSignal(show) {
             if (show) {
                 mainWindow.visible = true
-                mainWindow.showFullScreen()
             } else {
                 mainWindow.visible = false
             }
@@ -88,6 +87,7 @@ Window {
     onVisibleChanged: {
         if (visible) {
             // windowOpacity = 1;
+            mainWindow.showFullScreen();
             breakTimer.remainingTime = breakTimerIntialValueInSecond * 1000;
             breakTimer.start();
         } else {

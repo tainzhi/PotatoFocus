@@ -23,7 +23,6 @@ Window {
         function onWindowShowSignal(show) {
             if (show) {
                 secondWindow.visible = true
-                secondWindow.showFullScreen()
             } else {
                 secondWindow.visible = false
             }
@@ -32,5 +31,12 @@ Window {
 
     Component.onCompleted: {
         // secondWindow.showFullScreen()
+    }
+
+    onVisibleChanged: {
+        if (visible) {
+            secondWindow.showFullScreen();
+        } else {
+        }
     }
 }

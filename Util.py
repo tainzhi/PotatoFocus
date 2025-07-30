@@ -19,7 +19,7 @@ DEFAULT_SCREEN_PHOTO =  BASE_DIR / "Resource/ScreenPhoto/default.jpg"
 # QTimer的倒计时间隔 1s=1000ms
 TIMER_INTERVAL = 1000
 # 35min
-TIMER_WORK = 35*60 # seconds
+TIMER_WORK = 25*60 # seconds
 # 5min
 TIMER_BREAK = 5*60 # seconds
 # 是否在休息后继续工作
