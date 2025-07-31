@@ -61,6 +61,18 @@ Window {
         font.bold: true
         anchors.centerIn: parent
     }
+    
+    
+    Text {
+        // 格式化剩余时间为 mm:ss 格式
+        text: "Esc 键退出屏保图片和休息倒计时, 开始work计时"
+        color: "white"
+        font.pointSize: 20
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 30
+        anchors.left: parent.left
+        anchors.leftMargin: 30
+    }
 
     Timer {
         id: breakTimer
