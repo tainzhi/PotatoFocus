@@ -132,16 +132,19 @@ class MainApp(QApplication):
         
         # Add an action to show the application
         settings_action = QAction("Settings", self)
+        settings_action.setIcon(QIcon((str(util.SETTINGS_ICON))))
         settings_action.triggered.connect(self.show_settings_window)
         self.tray_menu.addAction(settings_action)
 
         # Add an action to show the application
-        show_action = QAction("Show", self)
+        show_action = QAction("Break", self)
+        show_action.setIcon(QIcon((str(util.FULLSCREEN_ICON))))
         show_action.triggered.connect(self.show_full_screen_desktop_overlay)
         self.tray_menu.addAction(show_action)
 
         # Add an action to quit the application
         quit_action = QAction("Quit", self)
+        quit_action.setIcon(QIcon(str(util.QUIT_ICON)))
         quit_action.triggered.connect(self.quit)
         self.tray_menu.addAction(quit_action)
 
@@ -217,7 +220,7 @@ class MainApp(QApplication):
                 chosed_screen_photo_path = util.CACHE_IMAGES_DIR / chosed_image
             else:
                 chosed_screen_photo_path = util.DEFAULT_SCREEN_PHOTO
-        # get the image center postion 200x200 main color, then get the constrast color
+        # get the image center postion 1000x1000 main color, then get the constrast color
         main_color = util.get_image_main_color(str(chosed_screen_photo_path), (1000, 1000))
         contrast_color = util.get_contrast_color(main_color)
         print(f"Chosed image: {chosed_screen_photo_path}, main color: {main_color}, contrast color: {contrast_color}, costs {time.time() - time_start:.2f} seconds")
