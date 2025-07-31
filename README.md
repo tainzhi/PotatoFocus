@@ -25,10 +25,5 @@ pip install -r requirements.txt
 python ui.py
 ```
 
-## Todo
-- [ ] 开机启动 [1](https://www.geeksforgeeks.org/autorun-a-python-script-on-windows-startup/) 和 [2](https://www.yisu.com/zixun/166099.html),也可参考 https://www.yisu.com/zixun/166099.html
-- [ ] trayicon显示当前状态
-- [ ] 添加设置 break和work的时间ui
-
 ## Reference
 - 图标网址: https://www.iconfont.cn/search/index?searchType=icon&q=%E7%95%AA%E8%8C%84

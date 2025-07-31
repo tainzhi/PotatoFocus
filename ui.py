@@ -63,6 +63,7 @@ class MainApp(QApplication):
         self.work_timer = QTimer(self)
         self.is_work_timer_set = False
         self.reset_work_timer()
+        self.work_timer_remain_time_str = ""
         
         self._image: Image = Image()
         self._image_thread = Thread(target=self._image.download, daemon=True)
@@ -125,7 +126,6 @@ class MainApp(QApplication):
         # Set up the tray icon
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QIcon(str(util.LOGO_ICON)))
-        self.tray_icon.setToolTip(util.APP_NAME)
 
         # Create a context menu for the tray icon
         self.tray_menu = QMenu()
@@ -232,11 +232,14 @@ class MainApp(QApplication):
         if self.remaining_time <= 0:
             self.work_timer.stop()
             self.show_full_screen_desktop_overlay()
+            self.tray_icon.setToolTip(f"{util.APP_NAME} - work")
             print("Countdown finished, showing windows.")
         else:
             minutes = self.remaining_time // (60 * 1000)
             seconds = (self.remaining_time % (60 * 1000)) // 1000
             print(f"Work remaining time: {minutes:02d}:{seconds:02d}", end="\r")
+            self.tray_icon.setToolTip(f"{util.APP_NAME} - work {minutes:02d}:{seconds:02d}")
+
 
     def on_tray_icon_activated(self, reason):
         if reason == QSystemTrayIcon.DoubleClick:
