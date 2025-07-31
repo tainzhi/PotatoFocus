@@ -1,6 +1,6 @@
 import sys
 from PySide6.QtGui import QIcon, QAction
-from PySide6.QtQml import QQmlApplicationEngine, QmlElement
+from PySide6.QtQml import QQmlApplicationEngine
 from PySide6.QtCore import Signal, QObject, QUrl, QEvent, Qt, qVersion, Slot, QTimer
 from PySide6.QtWidgets import QApplication, QSystemTrayIcon, QMenu
 from pathlib import Path
@@ -14,13 +14,13 @@ QML_IMPORT_NAME = "MainModule"
 QML_IMPORT_MAJOR_VERSION = 1
 
 
-@QmlElement
 class Bridge(QObject):
     
     breakTimerIntialValueInSecondSignal = Signal(int)
     breakTimerColorSignal = Signal(str)
     fullScreenDesktopOverlayShowSignal = Signal(bool)
     settingsWindowShowSignal = Signal(bool)
+    setBackgroundSignal = Signal(str)
 
     def __init__(self, app: "MainApp"):
         super().__init__()
@@ -39,6 +39,10 @@ class Bridge(QObject):
     def set_break_timer_color(self, color: str):
         self.breakTimerIntialValueInSecondSignal.emit(util.TIMER_BREAK)
         self.breakTimerColorSignal.emit(color)
+    
+    
+    def set_background(self, file_path: str):
+        self.setBackgroundSignal.emit( QUrl.fromLocalFile(file_path).toString())
     
     def show_full_screen_desktop_overlay(self):
         self.fullScreenDesktopOverlayShowSignal.emit(True)
@@ -151,24 +155,6 @@ class MainApp(QApplication):
         self.tray_icon.setContextMenu(self.tray_menu)
         self.tray_icon.activated.connect(self.on_tray_icon_activated)
         self.tray_icon.show()
-
-    def set_background(self, file_path: str):
-        # 为主屏幕设置背景
-        self.main_root_objects = self.main_engine.rootObjects()
-        if self.main_root_objects:
-            main_window = self.main_root_objects[0]
-            background_image = main_window.findChild(QObject, "backgroundImage")
-            if background_image:
-                background_image.setProperty("source", QUrl.fromLocalFile(file_path).toString())
-
-        # 为副屏幕设置背景
-        if self.second_screen:
-            self.second_root_objects = self.second_engine.rootObjects()
-            if self.second_root_objects:
-                second_window = self.second_root_objects[0]
-                background_image = second_window.findChild(QObject, "backgroundImage")
-                if background_image:
-                    background_image.setProperty("source", QUrl.fromLocalFile(file_path).toString())
     
     def reset_work_timer(self):
         # 断开之前的连接，避免重复连接
@@ -228,8 +214,8 @@ class MainApp(QApplication):
         # 把主屏幕的计时器颜色设置为对比色
         # rgb to hex color
         self._bridge.set_break_timer_color("#{:02x}{:02x}{:02x}".format(contrast_color[0], contrast_color[1], contrast_color[2]))   
+        self._bridge.set_background(str(chosed_screen_photo_path))
         self._bridge.show_full_screen_desktop_overlay()
-        self.set_background(str(chosed_screen_photo_path))
                 
     def update_countdown(self):
         self.remaining_time -= 1000

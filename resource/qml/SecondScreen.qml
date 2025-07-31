@@ -27,6 +27,10 @@ Window {
                 secondWindow.visible = false
             }
         }
+        
+        function onSetBackgroundSignal(value) {
+            backgroundImage.source =  value
+        }
     }
 
     Component.onCompleted: {

@@ -33,6 +33,10 @@ Window {
                 mainWindow.visible = false
             }
         }
+        
+        function onSetBackgroundSignal(value) {
+            backgroundImage.source =  value
+        }
     }
     
     // opacity: windowOpacity
