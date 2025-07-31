@@ -220,8 +220,9 @@ class MainApp(QApplication):
                 chosed_screen_photo_path = util.CACHE_IMAGES_DIR / chosed_image
             else:
                 chosed_screen_photo_path = util.DEFAULT_SCREEN_PHOTO
-        # get the image center postion 1000x1000 main color, then get the constrast color
-        main_color = util.get_image_main_color(str(chosed_screen_photo_path), (1000, 1000))
+        # 要计算出 Break Timer所在区域的图片的对比色
+        # 便于突出显示 Break Timer
+        main_color = util.get_image_main_color(str(chosed_screen_photo_path), util.BREAK_TIMER_SIZE_IN_MAIN_SCREEN)
         contrast_color = util.get_contrast_color(main_color)
         print(f"Chosed image: {chosed_screen_photo_path}, main color: {main_color}, contrast color: {contrast_color}, costs {time.time() - time_start:.2f} seconds")
         # 把主屏幕的计时器颜色设置为对比色

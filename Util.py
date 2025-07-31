@@ -14,19 +14,24 @@ APP_NAME = "PotatoFocus"
 ICON = BASE_DIR / "Resource/icons/potato.svg"
 LOGO_ICON = ICON
 TRAY_ICON = ICON
+QUIT_ICON = BASE_DIR / "Resource/icons/quit.svg"
+FULLSCREEN_ICON = BASE_DIR / "Resource/icons/fullscreen.svg"
+SETTINGS_ICON = BASE_DIR / "Resource/icons/setting.svg"
 DEFAULT_SCREEN_PHOTO =  BASE_DIR / "Resource/ScreenPhoto/default.jpg"
 
 # QTimer的倒计时间隔 1s=1000ms
 TIMER_INTERVAL = 1000
-# 35min
+# 25min
 TIMER_WORK = 25*60 # seconds
 # 5min
 TIMER_BREAK = 5*60 # seconds
 # 是否在休息后继续工作
 CONTINUOUS_WORK_AFTER_BREAK = False
 
+BREAK_TIMER_SIZE_IN_MAIN_SCREEN = (640, 184)
 
-def get_image_main_color(image_path: str, size: Tuple[int, int] = (200, 200))-> Tuple[int, int, int]:
+
+def get_image_main_color(image_path: str, size: Tuple[int, int] = (1000, 1000))-> Tuple[int, int, int]:
     from PIL import Image
     from collections import Counter
 
