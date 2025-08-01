@@ -9,6 +9,7 @@ Window {
     color: "transparent"
     // 设置窗口标志, 去掉标题栏
     flags: Qt.FramelessWindowHint
+    property real windowOpacity: 0
     
     Image {
         id: backgroundImage
@@ -33,13 +34,21 @@ Window {
         }
     }
 
-    Component.onCompleted: {
+    opacity: windowOpacity
+    Behavior on windowOpacity {
+        PropertyAnimation {
+            target: secondWindow
+            property: "windowOpacity"
+            duration: 600
+        }
     }
 
     onVisibleChanged: {
         if (visible) {
+            windowOpacity = 1
             secondWindow.showFullScreen();
         } else {
+            windowOpacity = 0
         }
     }
 }

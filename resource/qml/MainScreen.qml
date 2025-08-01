@@ -9,7 +9,7 @@ Window {
     color: "transparent"
     // 设置窗口标志, 去掉标题栏
     flags: Qt.FramelessWindowHint
-    // property real windowOpacity: 0
+    property real windowOpacity: 0
 
     property int breakTimerIntialValueInSecond: 5 * 60 // seconds
     property string breakTimerColor: "#ffffff"
@@ -28,7 +28,12 @@ Window {
         
         function onFullScreenDesktopOverlayShowSignal(show) {
             if (show) {
-                mainWindow.visible = true
+                Qt.callLater(function() {
+                    mainWindow.visible = true
+                    mainWindow.showFullScreen()
+                    mainWindow.raise()
+                    mainWindow.requestActivate()
+                })
             } else {
                 mainWindow.visible = false
             }
@@ -39,14 +44,14 @@ Window {
         }
     }
     
-    // opacity: windowOpacity
-    // Behavior on windowOpacity {
-    //     PropertyAnimation {
-    //         target: mainWindow
-    //         property: "windowOpacity"
-    //         duration: 300
-    //     }
-    // }
+    opacity: windowOpacity
+    Behavior on windowOpacity {
+        PropertyAnimation {
+            target: mainWindow
+            property: "windowOpacity"
+            duration: 600
+        }
+    }
 
     Image {
         id: backgroundImage
@@ -100,12 +105,11 @@ Window {
 
     onVisibleChanged: {
         if (visible) {
-            // windowOpacity = 1;
-            mainWindow.showFullScreen();
+            windowOpacity = 1;
             breakTimer.remainingTime = breakTimerIntialValueInSecond * 1000;
             breakTimer.start();
         } else {
-            // windowOpacity = 0;
+            windowOpacity = 0;
             breakTimer.stop();
         }
     }
