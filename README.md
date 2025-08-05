@@ -7,6 +7,8 @@
 3. 倒计时结束或者按 Esc 键开启下一个25 min 工作循环。
 4. 从[Pixabay](https://pixabay.com/api/docs/)下载图片, 随机选取作为break时间的桌面屏保(~~不使用更知名的[unsplash](https://unsplash.com/documentation#creating-a-developer-account), 应为在不开代理的情况下访问很不问题~~
 
+**注意**：api_key 获取页面 https://pixabay.com/api/docs/， 我的注册账号是qfq61@qq.com
+
 
 目前只在windows测试，还未在mac和linux下测试。
 

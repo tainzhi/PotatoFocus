@@ -1,5 +1,7 @@
 MainScreen 1.0 MainScreen.qml
 SecondScreen 1.0 SecondScreen.qml
 SettingsWindow 1.0 SettingsWindow.qml
+MySwitchBox 1.0 MySwitchBox.qml
+MySpinBox 1.0 MySpinBox.qml
 About 1.0 qml/About.qml
 singleton Colors 1.0 qml/Colors.qml

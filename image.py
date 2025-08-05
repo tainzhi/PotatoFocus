@@ -1,15 +1,17 @@
 import requests
 import json5
-from util import CACHE_IMAGES_DIR, PIXABAY_CONFIG, CACHE_DIR, PIXABAY_DOWNLOAED_IMAGE_LIMIT_PER_TIME, IMAGE_MOST_USED_TIMES
+from util import CACHE_IMAGES_DIR, PIXABAY_CONFIG, CACHE_DIR, PIXABAY_DOWNLOAED_IMAGE_LIMIT_PER_TIME
 import time
 from typing import Dict, Any
+from settings import Settings
 
 class Image:
     
-    def __init__(self):
+    def __init__(self, settings: Settings):
         self.usage_path = CACHE_DIR / "image_usage.json"
         self.usage: Dict[str, int] = {}
         self.load_usage()
+        self.__settings = settings
     
     def load_usage(self):
         if self.usage_path.exists():
@@ -25,10 +27,15 @@ class Image:
         if self.usage.values():
             min_usage = min(self.usage.values())
             least_used_images: list[str] = [image for image, count in self.usage.items() if count == min_usage]
-            if min_usage < IMAGE_MOST_USED_TIMES :
-                print(f"{len(least_used_images)} images are least used with {min_usage} times")
-                print(f"no need to download new images, as not all images are used more than {IMAGE_MOST_USED_TIMES} times")
+            if min_usage < self.__settings.getPixabayMostUsedPerImage() :
+                print(f"[Image] {len(least_used_images)} images are least used with {min_usage} times")
+                print(f"[Image] no need to download new images, as not all images are used more than {self.__settings.getPixabayMostUsedPerImage()} times")
                 return
+        
+        api_key = self.__settings.getPixabayApiKey()
+        if not api_key:
+            print("[Image] Pixabay API key not found. Please set it in the settings.")
+            return
         
         with open(str(PIXABAY_CONFIG), 'r') as f:
             config: Dict[str, Any] = json5.load(f) # type: ignore

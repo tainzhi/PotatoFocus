@@ -1,7 +1,6 @@
 {
     // https://pixabay.com/api/docs/
     "base_urL": "https://pixabay.com/api/",
-    "api_key": "51373175-e963b937c376ff5843beab2bb",
     "category": ["scene", "technology", "nature", "people", "animals", "food", "travel", "business", "health", "education", "sports", "music", "art", "fashion", "interior", "backgrounds"],
     "image_type": "photo",
     "orientation": "horizontal",

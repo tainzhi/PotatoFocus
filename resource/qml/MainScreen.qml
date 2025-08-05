@@ -16,8 +16,8 @@ Window {
 
     Connections {
         target: bridge
-        function onBreakTimerIntialValueInSecondSignal(value) {
-            breakTimerIntialValueInSecond = value;
+        function onBreakTimeInMinuteSignal(value) {
+            breakTimerIntialValueInSecond = value * 60;
         }
         
         function onBreakTimerColorSignal(value) {
