@@ -1,6 +1,11 @@
 ## Info
 这是一个 PySide6 实现的**跨平台番茄钟久坐神器**
 
+![双屏屏保](./art/1.png)
+![托盘图标](./art/2.png)
+![托盘菜单](./art/3.png)
+![设置窗口](./art/4.png)
+
 实现的功能：
 1. 默认25min的番茄工作时间，然后弹出全屏屏保(**强制休息**),并5min倒计时。
 2. **支持多屏显示器**（如果是多屏幕，都会全屏屏保覆盖，但是只在主屏幕显示倒计时）
@@ -28,4 +33,5 @@ python main.py
 ```
 
 ## Reference
+- https://doc.qt.io/qt-6/qtquickcontrols-customize.html#customizing-spinbox
 - 图标网址: https://www.iconfont.cn/search/index?searchType=icon&q=%E7%95%AA%E8%8C%84
