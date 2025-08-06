@@ -24,7 +24,7 @@
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
-python ui.py
+python main.py
 ```
 
 ## Reference
